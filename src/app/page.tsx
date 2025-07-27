@@ -1,14 +1,16 @@
 "use client"
 import React, { useState } from 'react'
+import ResultadoConversor from './Componentes/ResultadoConversor'
+import { ResultadoConversion } from './Modelos/ResultadoConversion'
 
 const ConversorTemperatura: React.FC = () => {
   const [temperatura] = useState<number>(77) 
-  const [grados] = useState<string>('°F') 
+  const [grados] = useState<string>('F') 
 
-  const convertirTemperatura = () => {
+  const convertirTemperatura = (): ResultadoConversion[] => {
     let celsius, fahrenheit, kelvin
 
-    if (grados === '°F') {
+    if (grados === 'F') {
       fahrenheit = temperatura
       celsius = (fahrenheit - 32) * 5/9
       kelvin = celsius + 273.15
@@ -16,25 +18,18 @@ const ConversorTemperatura: React.FC = () => {
       return [
         { unidad: 'Celsius', value: celsius.toFixed(1), origen: 'F' },
         { unidad: 'Kelvin', value: kelvin.toFixed(1), origen: 'F' },
-        { unidad: 'Celsius', value: (kelvin - 273.15).toFixed(1), origen: 'K' }
+        { unidad: 'Celsius', value: (kelvin - 273.15).toFixed(1), origen: 'K', kelvinOriginal: kelvin.toFixed(1) }
       ]
     }
 
     return []
   }
 
-  const results = convertirTemperatura()
+  const resultados = convertirTemperatura()
+
   return (
     <div>
-      <ul>
-        {results.map((result, index) => (
-          <li key={index}>
-            {result.origen === 'K'
-              ? `${results[1].value}K es igual a ${result.value}°C` 
-              : `${temperatura}${grados} es igual a ${result.value}${result.unidad === 'Celsius' ? '°C' : 'K'}`}
-          </li>
-        ))}
-      </ul>
+      <ResultadoConversor temperatura={temperatura} grados={grados} resultados={resultados} />
     </div>
   )
 }
